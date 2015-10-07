@@ -1,0 +1,20 @@
+
+body {
+  height: 100vh;
+}
+
+.view {
+  height: 100%
+}
+
+/*
+.preview {
+  position: absolute;
+  left: 300px;
+  right: 0;
+  bottom: 0;
+  top: 50vh;
+*/
+
+@import "../node_modules/codemirror/lib/codemirror.css";
+@import "../node_modules/codemirror/theme/monokai.css";
