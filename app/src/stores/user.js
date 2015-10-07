@@ -1,157 +1,149 @@
-import $ from 'jquery';
-import Backbone from 'backbone';
-import { assign } from 'underscore';
+import Backbone from 'backbone'
+import assign from 'assign'
+import axios from 'axios'
 
-import { API_URL, ACTIONS, AUTH_HEADER } from '../core/constants';
-import Dispatcher from '../core/dispatcher';
+import { API_URL, ACTIONS, AUTH_HEADER } from '../core/constants'
 import {
   BadRequestError,
   UnauthorizedError,
   ForbiddenError,
   NotFoundError,
   errorFromXHR
-} from '../core/errors';
-import UserCollection from '../collections/users';
-import User from '../models/user';
+} from '../core/errors'
 
-const AUTH_DATA_KEY        = 'authData';
-const LOGIN_ERROR_MESSAGE  = 'Invalid username or password.';
-const SIGNUP_ERROR_MESSAGE = 'Invalid username or password.';
+import Dispatcher from '../core/dispatcher'
 
-function getAuthData() {
-  return JSON.parse( sessionStorage.getItem( AUTH_DATA_KEY ) );
-}
+import UserCollection from '../collections/users'
+import User from '../models/user'
 
-function setAuthData( data ) {
-  sessionStorage.setItem( AUTH_DATA_KEY, JSON.stringify( data ) );
-}
+const AUTH_DATA_KEY        = 'authData'
+const LOGIN_ERROR_MESSAGE  = 'Invalid username or password.'
+const SIGNUP_ERROR_MESSAGE = 'Invalid username or password.'
 
-function clearAuthData() {
-  sessionStorage.removeItem( AUTH_DATA_KEY );
-}
+let getAuthData = () => JSON.parse( sessionStorage.getItem( AUTH_DATA_KEY ) )
+let setAuthData = data => sessionStorage.setItem( AUTH_DATA_KEY, JSON.stringify( data ) )
+let clearAuthData = () => sessionStorage.removeItem( AUTH_DATA_KEY )
 
 let UserStore = UserCollection.extend({
   _authToken         : null,
   _authenticatedUser : null,
 
-  _login: function ( username, password ) {
-    return Promise.resolve($.ajax({
-      url         : API_URL + '/auth/login',
-      method      : 'POST',
-      contentType : 'application/json',
-      data        : JSON.stringify({
-        username : username,
-        password : password
-      })
-    })).then(( data ) => {
-      setAuthData( data );
-      this._authToken         = data.token;
-      this._authenticatedUser = new User( data.user );
-      return this._authenticatedUser;
-    }).catch(( err ) => {
-      throw errorFromXHR( err );
-    });
+  async _login(data) {
+    try {
+      let data = await axios.post(`${API_URL}/auth/login`, data)
+      setAuthData(data)
+      this._authToken = data.token
+      this._authenticatedUser = new User(data.user)
+    } catch(e) {
+      throw errorFromXHR(e)
+    }
+    return
   },
 
-  _signup: function ( details ) {
-    return Promise.resolve($.ajax({
-      url         : API_URL + '/users',
-      method      : 'POST',
-      contentType : 'application/json',
-      data        : JSON.stringify( details )
-    })).catch(( err ) => {
-      throw errorFromXHR( err );
-    });
+  async _signup(details) {
+    try {
+      axios.post(`${API_URL}/users`, details)
+    } catch (e) {
+      throw errorFromXHR(err)
+    }
   },
 
-  _handleAction: function ( payload ) {
+  async _handleAction( payload ) {
     switch ( payload.actionType ) {
       case ACTIONS.LOGIN:
-        this._login( payload.username, payload.password ).then(() => {
-          this.trigger( 'login:success' );
-        }).catch(( err ) => {
-          if ( err instanceof UnauthorizedError ) {
-            this.trigger( 'login:failure', LOGIN_ERROR_MESSAGE );
-          } else if ( err instanceof ForbiddenError ) {
-            this.trigger( 'login:activate' );
-          } else if ( err instanceof NotFoundError ) {
-            this.trigger( 'login:failure', LOGIN_ERROR_MESSAGE );
+        try {
+          let { username, password } = payload
+          let res = await this._login({
+            username: payload.username,
+            password: payload.password,
+          })
+          this.trigger( 'login:success' )
+        } catch(e) {
+          if ( e instanceof UnauthorizedError ) {
+            this.trigger( 'login:failure', LOGIN_ERROR_MESSAGE )
+          } else if ( e instanceof ForbiddenError ) {
+            this.trigger( 'login:activate' )
+          } else if ( e instanceof NotFoundError ) {
+            this.trigger( 'login:failure', LOGIN_ERROR_MESSAGE )
           } else {
-            console.error( err.stack );
+            console.error( e.stack )
           }
-        });
-        break;
+        }
+        break
 
       case ACTIONS.LOGOUT:
-        this.logout().then(() => {
-          this.trigger( 'logout:success' );
-        }).catch(( err ) => {
-          console.error( err.stack );
-        });
-        break;
+        try {
+          await this.logout()
+          this.trigger( 'logout:success' )
+        } catch(e) {
+          console.error( e.stack )
+        }
+        break
 
       case ACTIONS.SIGNUP:
-        this._signup({
-          email    : payload.email,
-          username : payload.username,
-          password : payload.password,
-          active   : true // TODO: Should have email activation
-        }).then(( data ) => {
-          // this.trigger( 'signup:success', data );
-          // TEMPORARY until email activation is done
-          this._login( payload.username, payload.password ).then(() => {
-            this.trigger( 'login:success' );
-          });
-        }).catch(( err ) => {
-          if ( err instanceof BadRequestError ) {
-            this.trigger( 'signup:failure', SIGNUP_ERROR_MESSAGE );
+        try {
+          let data = await this._signup({
+            email    : payload.email,
+            username : payload.username,
+            password : payload.password,
+            active   : true
+          })
+          await this._login({
+            username: payload.username,
+            password: payload.password,
+          })
+          this.trigger( 'login:success' )
+
+        } catch(e) {
+          if ( e instanceof BadRequestError ) {
+            this.trigger( 'signup:failure', SIGNUP_ERROR_MESSAGE )
           } else {
-            console.error( err );
-            this.trigger( 'signup:failure', 'Unknown error occurred.' );
+            console.error( e )
+            this.trigger( 'signup:failure', 'Unknown error occurred.' )
           }
-        });
-        break;
+        }
+        break
     }
   },
 
   initialize: function ( models, options ) {
-    UserCollection.prototype.initialize.call( this, models, options );
+    UserCollection.prototype.initialize.call( this, models, options )
 
-    var data = getAuthData();
+    var data = getAuthData()
     if ( data ) {
-      this._authToken = data.token;
-      this._authenticatedUser = new User( data.user );
+      this._authToken = data.token
+      this._authenticatedUser = new User( data.user )
       // Should refetch the user from the API here
     }
 
-    Dispatcher.register( this._handleAction.bind( this ) );
+    Dispatcher.register( this._handleAction.bind( this ) )
 
     // Add auth token to request headers when logged in.
     Backbone.ajax = ( options ) => {
       if ( this.isAuthenticated() ) {
-        let authHeaders = {};
-        authHeaders[ AUTH_HEADER ] = this._authToken;
-        options.headers = assign({}, authHeaders, options.headers);
+        let authHeaders = {}
+        authHeaders[ AUTH_HEADER ] = this._authToken
+        options.headers = assign({}, authHeaders, options.headers)
       }
-      return $.ajax( options );
-    };
+      return $.ajax( options )
+    }
   },
 
   isAuthenticated: function () {
-    return ( typeof this._authToken === 'string' );
+    return ( typeof this._authToken === 'string' )
   },
 
   getAuthenticatedUser: function () {
-    return this._authenticatedUser;
+    return this._authenticatedUser
   },
 
   logout: function () {
-    clearAuthData();
-    Backbone.Relational.store.reset();
-    this._authToken         = null;
-    this._authenticatedUser = null;
-    return Promise.resolve();
+    clearAuthData()
+    Backbone.Relational.store.reset()
+    this._authToken         = null
+    this._authenticatedUser = null
+    return Promise.resolve()
   }
-});
+})
 
-export default new UserStore();
+export default new UserStore()

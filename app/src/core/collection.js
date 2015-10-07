@@ -1,5 +1,5 @@
 import { Collection } from 'backbone';
-import { assign } from 'underscore';
+import assign from 'assign';
 
 export default Collection.extend({
   getAsync: function ( id ) {

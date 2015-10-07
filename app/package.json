@@ -13,6 +13,7 @@
     "underscore": "^1.8.3"
   },
   "devDependencies": {
+    "assign": "^0.1.7",
     "axios": "^0.7.0",
     "babelify": "^6.3.0",
     "backbone": "^1.2.3",
