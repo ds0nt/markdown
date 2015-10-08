@@ -6,7 +6,10 @@ import Header from './app-header'
 import AppView from './app-view'
 import Footer from './app-footer'
 
-let App = {
+import { ACTIONS } from '../core/constants'
+import Dispatcher from '../core/dispatcher'
+
+let Layout = {
   initialState: () => ({
     view: AppView
   }),
@@ -29,10 +32,10 @@ let App = {
 }
 
 let init = () => {
-  render(tree(<App />), document.getElementById('app'))
+  render(tree(<Layout />), document.getElementById('app'))
 }
 
 export default {
-  App,
+  Layout,
   init
 }

@@ -1,11 +1,12 @@
 import element from 'virtual-element'
-import UserStore from '../stores/user'
-
+import AuthStore from '../stores/auth'
+import Dispatcher from '../core/dispatcher'
+import { ACTIONS } from '../core/constants'
 function createFieldHandler( name ) {
-  return ( e ) => {
+  return (e, c, setState) => {
     let update = {}
     update[ name ] = e.target.value
-    this.setState( update )
+    setState( update )
   }
 }
 
@@ -27,18 +28,17 @@ let initialState = () => {
     error      : ''
   }
 }
-
 let afterMount = (c, el, setState) => {
-  UserStore.on('login:failure', ( error ) => {
-    setState({
-      submitting : false,
-      error      : error
-    })
+  let fn = error => setState({
+    submitting : false,
+    error      : error
   })
+  AuthStore.on('login:failure', fn)
+  setState({ loginHandler: fn })
 }
 
-let beforeUnmount = () => {
-  UserStore.off( 'login:failure' )
+let beforeUnmount = (c) => {
+  AuthStore.removeListener('login:failure', c.state.loginHandler)
 }
 
 let render = c => {
@@ -49,15 +49,14 @@ let render = c => {
   }
 
   return (
-    <div className="login-page">
-      <img src="/img/logo_big.png" alt="Draw Gaiden - Login" />
-      <form onSubmit={handleSubmit} className="pure-form">
-        <p className="error">{state.error}</p>
+    <div class="login-page">
+      <form onSubmit={handleSubmit} class="pure-form">
+        <p class="error">{state.error}</p>
         <input type="text" onChange={createFieldHandler('username')} value={state.username} placeholder="Username" />
         <input type="password" onChange={createFieldHandler('password')} value={state.password} placeholder="Password" />
-        <button type="submit" className="login-page-button pure-button pure-button-primary">{buttonContent}</button>
+        <button type="submit">{buttonContent}</button>
       </form>
-      <p className="login-signup-link"><a href="/signup">Need an account?</a></p>
+      <p class="login-signup-link"><a href="/signup">Need an account?</a></p>
     </div>
   )
 }

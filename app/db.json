@@ -2,59 +2,65 @@
   "documents": [
     {
       "id": 1,
-      "title": "Alberta",
+      "name": "Alberta",
       "body": "Alberta is ALBERTA Alberta alberta albertaAlbERta of the Alberta degree. I have much to impart-- wisdoms of Alberta and such.",
       "author": 1
     },
     {
       "id": 2,
-      "title": "Brittain",
+      "name": "Brittain",
       "body": "Brittain is BRITTAIN Brittain brittain brittainBritTAin of the Brittain degree. I have much to impart-- wisdoms of Brittain and such.",
       "author": 1
     },
     {
       "id": 3,
-      "title": "California",
+      "name": "California",
       "body": "California is CALIFORNIA California california californiaCalifoRNia of the California degree. I have much to impart-- wisdoms of California and such.",
       "author": 1
     },
     {
       "id": 4,
-      "title": "Danish",
+      "name": "Danish",
       "body": "Danish is DANISH Danish danish danishDaNIsh of the Danish degree. I have much to impart-- wisdoms of Danish and such.",
       "author": 1
     },
     {
       "id": 5,
-      "title": "Everest",
+      "name": "Everest",
       "body": "Everest is EVEREST Everest everest everestEveREst of the Everest degree. I have much to impart-- wisdoms of Everest and such.",
       "author": 1
     },
     {
       "id": 6,
-      "title": "Finale",
+      "name": "Finale",
       "body": "Finale is FINALE Finale finale finaleFiNAle of the Finale degree. I have much to impart-- wisdoms of Finale and such.",
       "author": 1
     },
     {
       "id": 7,
-      "title": "Grandissimo",
+      "name": "Grandissimo",
       "body": "Grandissimo is GRANDISSIMO Grandissimo grandissimo grandissimoGrandisSImo of the Grandissimo degree. I have much to impart-- wisdoms of Grandissimo and such.",
       "author": 1
     },
     {
       "id": 8,
-      "title": "Hallelujah",
+      "name": "Hallelujah",
       "body": "Hallelujah is HALLELUJAH Hallelujah hallelujah hallelujahHallelUJah of the Hallelujah degree. I have much to impart-- wisdoms of Hallelujah and such.",
       "author": 1
     },
     {
       "id": 9,
-      "title": "Iqualuit",
+      "name": "Iqualuit",
       "body": "Iqualuit is IQUALUIT Iqualuit iqualuit iqualuitIquaLUit of the Iqualuit degree. I have much to impart-- wisdoms of Iqualuit and such.",
       "author": 1
     }
   ],
+  "auth/login": {
+    "token": "ohai",
+    "user": {
+      "name": "ds0nt"
+    }
+  },
   "authors": [
     {
       "id": 1,

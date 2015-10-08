@@ -1,4 +1,3 @@
-import { render, tree } from 'deku'
 import element from 'virtual-element'
 
 import DocumentEditor from './document-editor'

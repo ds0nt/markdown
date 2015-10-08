@@ -1,7 +1,8 @@
 module.exports = {
-  API_URL     : 'http://localhost:3000',
-  AUTH_HEADER : 'X-JWT-TOKEN',
-  ACTIONS     : {
+  API_URL       : 'http://localhost:3000',
+  AUTH_HEADER   : 'X-JWT-TOKEN',
+  AUTH_DATA_KEY : 'authData',
+  ACTIONS       : {
     NAVIGATE          : 'navigate',
     LOGIN             : 'login',
     LOGOUT            : 'logout',
