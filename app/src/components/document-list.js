@@ -13,64 +13,70 @@ let Loader = {
 }
 
 let DocumentItem = {
-  render: c =>
-    <a class="item" onClick={c.props.onClick}>
-      <i class="file icon"></i>
-      <div class="content">
-        <div class="description">{c.props.item.title}</div>
-      </div>
-    </a>
+  render: c => {
+    let _item = c.props.item
+    let select = () => Dispatcher.dispatch({
+      actionType: ACTIONS.SELECT_DOCUMENT,
+      id: _item.id
+    })
+    let Wrap = {
+      render ({props}) {
+        if (c.props.active)
+          return <div class="active item">{props.children}</div>
+        return <a class="item" onClick={select}>{props.children}</a>
+      }
+    }
+
+    return <Wrap>{_item.name}</Wrap>
+  }
 }
 
 let initialState = (props) => ({
   loading: true,
-  item: null,
-  items: [],
+  selected: null,
+  items: DocumentStore.getState(),
   adding: false
 })
-function onDocumentChanged(items) {
-  console.log('document changed')
-  this.setState({
-    loading : false,
-    items   : items
+
+function updateItems(setState) {
+  return () => setState({
+    loading: false,
+    items: DocumentStore.getState()
   })
 }
-let afterMount = async (c, el, setState) => {
-  DocumentStore.list()
-  DocumentStore.on('changed',  onDocumentChanged.bind(null, { setState }))
-  return {
-    loading : true,
-    items   : [],
-  }
+
+let afterMount = (c, el, setState) => {
+  // document sync listener
+  let onSync = updateItems(setState)
+  DocumentStore.on('sync:success', onSync)
+  setState({ onSync })
+
+  // document selected listener
+  Dispatcher.register(action => {
+    if (action.actionType == ACTIONS.SELECT_DOCUMENT) {
+      setState({
+        selected: action.id
+      })
+    }
+  })
 }
 
 let beforeUnmount = (c) => {
-  DocumentStore.removeListener('changed', onDocumentChanged)
+  DocumentStore.removeListener('sync:success', c.state.onSync)
 }
 
 let render = ({ props, state }, setState) => {
   let { items=[] } = state
 
-  let add = async(e, c) => {
+  let add = () => {
     Dispatcher.dispatch({
       actionType : ACTIONS.CREATE_DOCUMENT,
-      toolName   : c.state.adding
     });
   }
 
-  let select = (e, c, u) => {
-    Dispatcher.dispatch({
-      actionType : ACTIONS.SELECT_DOCUMENT,
-      toolName   : c.props.item
-    });
-  }
+  let list = items.map(item => <DocumentItem active={item.id === state.selected} item={item} onClick="false" />)
 
-  let list = []
-  for (let item of items) {
-    list.push(<DocumentItem active="false" item={item} onClick="false" />)
-  }
-
-  return <div class="ui list">
+  return <div class="ui link list">
     <Loader active={state.loading}>Loading</Loader>
       {
         state.adding

@@ -7,6 +7,7 @@ module.exports = {
     LOGIN             : 'login',
     LOGOUT            : 'logout',
     SIGNUP            : 'signup',
+    SYNC_DOCUMENTS       : 'sync_documents',
     CREATE_DOCUMENT       : 'create_document',
     SELECT_DOCUMENT       : 'select_document',
     ARCHIVE_DOCUMENT       : 'archive_document',

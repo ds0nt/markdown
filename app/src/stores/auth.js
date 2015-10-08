@@ -1,9 +1,23 @@
+/**
+ * AuthStore
+ * a store that uses api calls and local storage to manage token based user authentication
+ *
+ * dispatches:
+ *
+ * handles:
+ *   ACTIONS.LOGIN
+ *   ACTIONS.LOGOUT
+ *
+ * emits:
+ *   - login:success, login:failure, login:activate
+ *   - logout:success
+ */
+
 import { ACTIONS, AUTH_HEADER, AUTH_DATA_KEY } from '../core/constants'
 import Dispatcher from '../core/dispatcher'
+import Errors from '../core/errors'
 import users from '../rest/auth'
-
 import { EventEmitter } from 'events'
-
 
 class AuthStore extends EventEmitter {
 
@@ -15,14 +29,14 @@ class AuthStore extends EventEmitter {
     if (data && data.token && data.user)
       this.authenticate(data)
 
-      Dispatcher.register(action => {
-        switch (action.actionType) {
-          case ACTIONS.LOGIN:
-            return this.loginAction(action)
-          case ACTIONS.LOGOUT:
-            return this.logoutAction(action)
-        }
-      })
+    Dispatcher.register(action => {
+      switch (action.actionType) {
+        case ACTIONS.LOGIN:
+          return this.loginAction(action)
+        case ACTIONS.LOGOUT:
+          return this.logoutAction(action)
+      }
+    })
   }
   // Save authentication data in local storage
   getAuthData(){
@@ -39,7 +53,6 @@ class AuthStore extends EventEmitter {
   }
 
   authenticate(data) {
-    console.dir(data)
     this.setAuthData(data)
     this._authToken = data.token
     this._authenticatedUser = data.user
@@ -54,15 +67,15 @@ class AuthStore extends EventEmitter {
       this.authenticate(data)
       this.emit( 'login:success', data )
     } catch(e) {
-      // if ( e instanceof UnauthorizedError ) {
-      //   this.emit( 'login:failure', LOGIN_ERROR_MESSAGE )
-      // } else if ( e instanceof ForbiddenError ) {
-      //   this.emit( 'login:activate' )
-      // } else if ( e instanceof NotFoundError ) {
-      //   this.emit( 'login:failure', LOGIN_ERROR_MESSAGE )
-      // } else {
+      if ( e instanceof Errors.UnauthorizedError ) {
+        this.emit( 'login:failure', "Incorrect username or password" )
+      } else if ( e instanceof Errors.ForbiddenError ) {
+        this.emit( 'login:activate' )
+      } else if ( e instanceof Errors.NotFoundError ) {
+        this.emit( 'login:failure', "Incorrect username or password" )
+      } else {
         console.error( e.stack )
-      // }
+      }
     }
   }
 

@@ -36,6 +36,9 @@ class Application {
 
   app() {
     Dispatcher.dispatch({
+      actionType: ACTIONS.SYNC_DOCUMENTS
+    })
+    Dispatcher.dispatch({
       actionType : ACTIONS.NAVIGATE,
       view   : AppView
     })

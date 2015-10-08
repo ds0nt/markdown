@@ -1,4 +1,17 @@
-import { ACTIONS, AUTH_HEADER, AUTH_DATA_KEY } from '../core/constants'
+/**
+ * AuthStore
+ * a store that uses api calls and local storage to manage token based user authentication
+ *
+ * dispatches:
+ *
+ * handles:
+ *   ACTIONS.SYNC_DOCUMENTS
+ *
+ * emits:
+ *   - sync:success, sync:failure
+ */
+
+ import { ACTIONS } from '../core/constants'
 import Dispatcher from '../core/dispatcher'
 import documents from '../rest/documents'
 
@@ -10,16 +23,26 @@ class DocumentStore extends EventEmitter {
   constructor() {
     super()
     this.state = []
+    Dispatcher.register(action => {
+      switch (action.actionType) {
+        case ACTIONS.SYNC_DOCUMENTS:
+          return this.sync(action)
+      }
+    })
   }
-  async list() {
+  async sync() {
+    console.log('syncing documents')
     try {
-      let docs = await documents.read()
-      this.state = docs.data
-      this.emit('changed', this.state)
-      this.emit('list:success')
+      let { data } = await documents.sync()
+      this.state = data
+      console.log('sync:success', data)
+      this.emit('sync:success')
     } catch (e) {
-      this.emit('list:failed')
+      this.emit('sync:failure')
     }
+  }
+  getState() {
+    return this.state
   }
 }
 export default new DocumentStore()
