@@ -39,6 +39,7 @@ class AuthStore extends Store {
     } = JSON.parse( sessionStorage.getItem(AUTH_DATA_KEY)) || {}
     return { token, user }
   }
+
   setAuth(data) {
     this.setState({
       token : data.token,
@@ -46,6 +47,7 @@ class AuthStore extends Store {
     })
     sessionStorage.setItem(AUTH_DATA_KEY, JSON.stringify(data))
   }
+
   clearAuth() {
     this.setState({
       token: null,
@@ -53,8 +55,13 @@ class AuthStore extends Store {
     })
     sessionStorage.removeItem(AUTH_DATA_KEY)
   }
+
   isAuthenticated() {
-    return typeof this.getState()["token"] === 'string'
+    let { token, user } = this.getState()
+    console.log(token, user)
+    if (token != null)
+      return true
+    return false
   }
 
   async loginAction(data) {

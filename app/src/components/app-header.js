@@ -1,20 +1,34 @@
+import Dispatcher from '../core/dispatcher'
+import {ACTIONS} from '../core/constants'
 import element from 'virtual-element'
 import { render, tree } from 'deku'
 
 export default {
-  render: () =>
-    <div class="ui attached inverted menu">
-      <div class="ui container">
-        <div class="header item">
-           NotePad
-        </div>
-        <div class="ui right simple dropdown item">
-          <i class="settings icon"></i>
-          <div class="menu">
-            <a class="item"><i class="edit icon"></i> Edit Profile</a>
-            <a class="item"><i class="globe icon"></i> Choose Language</a>
+  afterMount(component, el, setState) {
+  },
+  beforeUnmount(component, el) {
+
+  },
+  render() {
+    function logout(e) {
+      Dispatcher.dispatch({
+        actionType: ACTIONS.LOGOUT
+      })
+    }
+    return (
+      <div class="ui attached inverted menu">
+        <div class="ui container">
+          <div class="header item">
+             NotePad
+          </div>
+          <div class="ui right simple dropdown item">
+            <i class="settings icon"></i>
+            <div class="menu">
+              <a class="item" onClick={logout}><i class="globe icon"></i> Logout</a>
+            </div>
           </div>
         </div>
       </div>
-    </div>
+    )
+  }
 }

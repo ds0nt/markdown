@@ -16,7 +16,8 @@ class Application {
       '/logout': [this.authed, this.logout],
     })
     this.router.init()
-    AuthStore.onAction('login:success', () => this.router.setRoute('/') )
+    this.router.setRoute('/')
+    AuthStore.onAction('update', (state) => this.router.setRoute( state.token ? '/' : '/login') )
   }
 
   start() {
@@ -24,12 +25,14 @@ class Application {
 
   authed() {
     if (!AuthStore.isAuthenticated()) {
+      console.log("UnAuthed: redirecting to /login");
       this.setRoute('/login')
     }
   }
 
   unauthed() {
     if (AuthStore.isAuthenticated()) {
+      console.log("Already Authed: redirecting to /");
       this.setRoute('/')
     }
   }
