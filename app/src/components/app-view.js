@@ -5,7 +5,7 @@ import DocumentList from './document-list'
 
 export default {
   render: () =>
-    <section class="view ui grid container">
+    <section class="app-view ui grid container">
       <div class="four wide column">
         <DocumentList title="documents" />
       </div>

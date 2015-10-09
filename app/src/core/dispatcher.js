@@ -1,2 +1,3 @@
-import Flux from 'flux';
-export default new Flux.Dispatcher();
+import ActionDispatcher from './action-dispatcher'
+
+export default new ActionDispatcher()

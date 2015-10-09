@@ -3,17 +3,18 @@ import { render, tree } from 'deku'
 
 export default {
   render: () =>
-   <div class="ui pointing inverted menu">
-      <a class="active item">
-          <i class="inverted blue home icon"></i> Documents
-      </a>
-      <div class="right menu">
-          <a class="item">
-              <i class="inverted blue settings icon"></i> Settings
-          </a>
-          <a class="item">
-              <i class="inverted blue user icon"></i> Login
-          </a>
+    <div class="ui attached inverted menu">
+      <div class="ui container">
+        <div class="header item">
+           NotePad
+        </div>
+        <div class="ui right simple dropdown item">
+          <i class="settings icon"></i>
+          <div class="menu">
+            <a class="item"><i class="edit icon"></i> Edit Profile</a>
+            <a class="item"><i class="globe icon"></i> Choose Language</a>
+          </div>
+        </div>
       </div>
     </div>
 }

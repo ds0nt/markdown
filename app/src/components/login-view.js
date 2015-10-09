@@ -29,16 +29,17 @@ let initialState = () => {
   }
 }
 let afterMount = (c, el, setState) => {
-  let fn = error => setState({
-    submitting : false,
-    error      : error
+  setState({
+    loginHandler: AuthStore.onAction('login:failure', error => setState({
+      submitting : false,
+      error      : error
+    }))
   })
-  AuthStore.on('login:failure', fn)
-  setState({ loginHandler: fn })
 }
 
-let beforeUnmount = (c) => {
-  AuthStore.removeListener('login:failure', c.state.loginHandler)
+let beforeUnmount = (component) => {
+  let {state} = component
+  state.loginHandler.off()
 }
 
 let render = c => {

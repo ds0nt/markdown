@@ -13,7 +13,6 @@
     "underscore": "^1.8.3"
   },
   "devDependencies": {
-    "assign": "^0.1.7",
     "axios": "^0.7.0",
     "babelify": "^6.3.0",
     "browserify": "^11.2.0",
@@ -23,6 +22,7 @@
     "events": "^1.1.0",
     "flux": "^2.1.1",
     "myth": "^1.5.0",
+    "object-assign": "^4.0.1",
     "validator": "^4.1.0",
     "virtual-element": "^1.2.0",
     "watchman": "^0.1.8"

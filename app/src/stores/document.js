@@ -12,37 +12,29 @@
  */
 
  import { ACTIONS } from '../core/constants'
-import Dispatcher from '../core/dispatcher'
+import Store from '../core/store'
 import documents from '../rest/documents'
+import Dispatcher from '../core/dispatcher'
 
-import { EventEmitter } from 'events'
-
-
-class DocumentStore extends EventEmitter {
-
+class DocumentStore extends Store {
   constructor() {
     super()
-    this.state = []
-    Dispatcher.register(action => {
-      switch (action.actionType) {
-        case ACTIONS.SYNC_DOCUMENTS:
-          return this.sync(action)
-      }
-    })
+    Dispatcher.onAction(ACTIONS.SYNC_DOCUMENTS, () => this.sync())
+  }
+  getInitialState() {
+    return {
+      documents: []
+    }
   }
   async sync() {
-    console.log('syncing documents')
     try {
       let { data } = await documents.sync()
-      this.state = data
-      console.log('sync:success', data)
-      this.emit('sync:success')
+      this.setState({
+        documents: data
+      })
     } catch (e) {
       this.emit('sync:failure')
     }
-  }
-  getState() {
-    return this.state
   }
 }
 export default new DocumentStore()

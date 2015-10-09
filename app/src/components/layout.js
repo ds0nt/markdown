@@ -4,8 +4,6 @@ import element from 'virtual-element'
 import Forkme from './forkme'
 import Header from './app-header'
 import AppView from './app-view'
-import Footer from './app-footer'
-
 import { ACTIONS } from '../core/constants'
 import Dispatcher from '../core/dispatcher'
 
@@ -22,11 +20,16 @@ let Layout = {
   },
   render: c => {
     let View = c.state.view
-    return <main class="ui layout container">
+    return <main>
       <Forkme repo="ds0nt/mdpad" />
-      <Header />
-      <View />
-      <Footer />
+      <section class="ui grid">
+        <div class="sixteen column row">
+          <Header />
+        </div>
+        <div class="sixteen column row">
+          <View />
+        </div>
+      </section>
     </main>
   }
 }

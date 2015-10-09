@@ -16,7 +16,7 @@ class Application {
       '/logout': [this.authed, this.logout],
     })
     this.router.init()
-    AuthStore.on('login:success', () => this.router.setRoute('/') )
+    AuthStore.onAction('login:success', () => this.router.setRoute('/') )
   }
 
   start() {

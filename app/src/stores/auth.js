@@ -12,79 +12,72 @@
  *   - login:success, login:failure, login:activate
  *   - logout:success
  */
-
-import { ACTIONS, AUTH_HEADER, AUTH_DATA_KEY } from '../core/constants'
+import {
+  ACTIONS,
+  AUTH_HEADER,
+  AUTH_DATA_KEY,
+} from '../core/constants'
+import {
+  UnauthorizedError,
+  ForbiddenError,
+  NotFoundError,
+} from '../core/errors'
+import Store from '../core/store'
+import auth from '../rest/auth'
 import Dispatcher from '../core/dispatcher'
-import Errors from '../core/errors'
-import users from '../rest/auth'
-import { EventEmitter } from 'events'
 
-class AuthStore extends EventEmitter {
-
+class AuthStore extends Store {
   constructor() {
     super()
-    this._authToken = null
-    this._authenticatedUser = null
-    let data = this.getAuthData()
-    if (data && data.token && data.user)
-      this.authenticate(data)
-
-    Dispatcher.register(action => {
-      switch (action.actionType) {
-        case ACTIONS.LOGIN:
-          return this.loginAction(action)
-        case ACTIONS.LOGOUT:
-          return this.logoutAction(action)
-      }
+    Dispatcher.onAction(ACTIONS.LOGIN, () => this.loginAction())
+    Dispatcher.onAction(ACTIONS.LOGOUT, () => this.logoutAction())
+  }
+  getInitialState() {
+    let {
+      token = null,
+      user = null,
+    } = JSON.parse( sessionStorage.getItem(AUTH_DATA_KEY)) || {}
+    return { token, user }
+  }
+  setAuth(data) {
+    this.setState({
+      token : data.token,
+      user : data.user,
     })
-  }
-  // Save authentication data in local storage
-  getAuthData(){
-    return JSON.parse( sessionStorage.getItem(AUTH_DATA_KEY))
-  }
-  setAuthData(data) {
     sessionStorage.setItem(AUTH_DATA_KEY, JSON.stringify(data))
   }
-  clearAuthData() {
+  clearAuth() {
+    this.setState({
+      token: null,
+      user: null,
+    })
     sessionStorage.removeItem(AUTH_DATA_KEY)
   }
   isAuthenticated() {
-    return typeof this._authToken === 'string'
+    return typeof this.getState()["token"] === 'string'
   }
 
-  authenticate(data) {
-    this.setAuthData(data)
-    this._authToken = data.token
-    this._authenticatedUser = data.user
-  }
-
-  async loginAction(action) {
+  async loginAction(data) {
     try {
-      let {data} = await users.login({
-        username: action.username,
-        password: action.password,
-      })
-      this.authenticate(data)
-      this.emit( 'login:success', data )
+      let res = await auth.login(data)
+      this.setAuth(res.data)
+      this.dispatch('login:success')
     } catch(e) {
-      if ( e instanceof Errors.UnauthorizedError ) {
-        this.emit( 'login:failure', "Incorrect username or password" )
-      } else if ( e instanceof Errors.ForbiddenError ) {
-        this.emit( 'login:activate' )
-      } else if ( e instanceof Errors.NotFoundError ) {
-        this.emit( 'login:failure', "Incorrect username or password" )
+      if ( e instanceof UnauthorizedError ) {
+        this.dispatch('login:failure', "Incorrect username or password")
+      } else if ( e instanceof ForbiddenError ) {
+        this.dispatch('login:activate')
+      } else if ( e instanceof NotFoundError ) {
+        this.dispatch('login:failure', "Incorrect username or password")
       } else {
         console.error( e.stack )
       }
     }
   }
 
-  async logoutAction(action) {
-    console.log('logoutAction', action)
-    this.clearAuthData()
-    this._authToken         = null
-    this._authenticatedUser = null
-    this.emit( 'logout:success' )
+  logoutAction() {
+    this.clearAuth()
+    this.dispatch('logout:success')
   }
 }
 export default new AuthStore()
