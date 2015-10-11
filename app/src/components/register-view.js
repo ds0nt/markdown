@@ -2,7 +2,13 @@ import element from 'virtual-element'
 import AuthStore from '../stores/auth'
 import Dispatcher from '../core/dispatcher'
 import { ACTIONS } from '../core/constants'
-
+function createFieldHandler( name ) {
+  return (e, c, setState) => {
+    let update = {}
+    update[ name ] = e.target.value
+    setState( update )
+  }
+}
 
 function handleSubmit( e, component, setState ) {
   setState({
@@ -10,7 +16,7 @@ function handleSubmit( e, component, setState ) {
     error: ''
   })
   Dispatcher.dispatch({
-    actionType : ACTIONS.LOGIN,
+    actionType : ACTIONS.REGISTER,
     email   : component.state.email,
     password   : component.state.password
   })
@@ -26,7 +32,7 @@ let initialState = () => {
 }
 let afterMount = (c, el, setState) => {
   setState({
-    loginHandler: AuthStore.onAction('login:failure', ({error}) => {
+    registerHandler: AuthStore.onAction('register:failure', ({error}) => {
       setState({
         submitting : false,
         error      : error
@@ -38,7 +44,7 @@ let afterMount = (c, el, setState) => {
 
 let beforeUnmount = (component) => {
   let {state} = component
-  state.loginHandler.off()
+  state.registerHandler.off()
 }
 function signup() {
   Dispatcher.dispatch({
@@ -54,16 +60,9 @@ let render = c => {
     buttonContent = (<img src="/img/loading.gif" alt="Logging in..." />)
   }
 
-  function createFieldHandler( name ) {
-    return (e, c, setState) => {
-      let update = {}
-      update[ name ] = e.target.value
-      setState( update )
-    }
-  }
   return (
   <div class="ui container">
-    <div class="login-page">
+    <div class="register-page">
       <div class={`ui ${state.submitting ? 'loading' : ''} ${state.error !== '' ? 'error' : ''} form`}>
         <div class="field">
           <label>E-mail</label>
@@ -79,7 +78,7 @@ let render = c => {
         </div> : ''
         }
       </div>
-      <p class="login-signup-link"><a onClick={signup}>Need an account?</a></p>
+      <p class="register-signup-link"><a onClick={signup}>Need an account?</a></p>
     </div>
   </div>
   )

@@ -4,6 +4,7 @@ import Layout from '../components/layout'
 import { ACTIONS } from '../core/constants'
 import AppView from '../components/app-view'
 import LoginView from '../components/login-view'
+import RegisterView from '../components/register-view'
 import Dispatcher from '../core/dispatcher'
 
 class Application {
@@ -17,6 +18,7 @@ class Application {
     })
     this.router.init()
     this.router.setRoute('/')
+    Dispatcher.onAction(ACTIONS.SET_ROUTE, (data) => this.router.setRoute(data.route))
     AuthStore.onAction('update', (state) => this.router.setRoute( state.token ? '/' : '/login') )
   }
 
@@ -42,14 +44,14 @@ class Application {
       actionType: ACTIONS.SYNC_DOCUMENTS
     })
     Dispatcher.dispatch({
-      actionType : ACTIONS.NAVIGATE,
+      actionType : ACTIONS.SET_VIEW,
       view   : AppView
     })
   }
 
   login() {
     Dispatcher.dispatch({
-      actionType : ACTIONS.NAVIGATE,
+      actionType : ACTIONS.SET_VIEW,
       view   : LoginView
     })
   }
@@ -61,8 +63,8 @@ class Application {
 
   signup() {
     Dispatcher.dispatch({
-      actionType : ACTIONS.NAVIGATE,
-      view   : 'signup'
+      actionType : ACTIONS.SET_VIEW,
+      view   : RegisterView
     })
   }
 }

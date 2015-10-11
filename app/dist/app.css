@@ -1,3 +1,33 @@
+body {
+  background: #282C34;
+  min-height: 100vh;
+}
+
+#top-header {
+  background: #21252B;
+}
+
+#document-list {
+  background: #21252B !important;
+  color: #ABB2BF !important;
+  border-right: 1px solid #181A1F;
+}
+
+#document-list .active.item {
+  color: #61AFEF !important;
+}
+
+#document-list * {
+  color: #ABB2BF !important;
+}
+
 .app-view {
   padding-top: 40px;
+}
+
+#epiceditor {
+  background: #282C34;
+  overflow-y: auto;
+  min-height: 100vh;
+  height: auto;
 }

@@ -1,12 +1,14 @@
-html { padding:10px; }
+html {
+  padding:0px;
+
+}
 
 body {
-  border:0;
-  background:rgb(41,41,41);
+  max-height: 100vh;
+  background: transparent;
   font-family:monospace;
   font-size:14px;
-  padding:10px;
-  color:#ddd;
+  color:#ABB2BF;
   line-height:1.35em;
   margin:0;
   padding:0;

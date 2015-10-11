@@ -15,20 +15,8 @@ export default {
         actionType: ACTIONS.LOGOUT
       })
     }
-    return (
-      <div class="ui attached inverted menu">
-        <div class="ui container">
-          <div class="header item">
-             NotePad
-          </div>
-          <div class="ui right simple dropdown item">
-            <i class="settings icon"></i>
-            <div class="menu">
-              <a class="item" onClick={logout}><i class="globe icon"></i> Logout</a>
-            </div>
-          </div>
-        </div>
+    return <div class="menu">
+        <a class="item" onClick={logout}><i class="globe icon"></i> Logout</a>
       </div>
-    )
   }
 }

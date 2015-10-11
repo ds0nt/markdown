@@ -1,15 +1,8 @@
-import axios from 'axios'
-import { API_URL } from '../core/constants'
-import validator from 'validator'
-
-function validate(data) {
-}
-
-let endpoint = API_URL + '/documents'
+import http from '../core/http'
 export default {
-  sync   : ()       => axios.get( endpoint ),
-  fetch  : (id)     => axios.get( endpoint + `/${id}` ),
-  create : (data)     => axios.post( endpoint, data ),
-  update : (id, data) => axios.put( endpoint + `/${id}`, data ),
-  delete : (id)       => axios.delete( endpoint + `/${id}` ),
+  sync   : ()       => http.get('/documents'),
+  fetch  : (id)     => http.get('/documents/' + id),
+  create : (data)     => http.post('/documents', data ),
+  update : (id, data) => http.put('/documents/' + id, data ),
+  delete : (id)       => http.delete('/documents/' + id),
 }

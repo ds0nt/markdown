@@ -29,7 +29,8 @@ import Dispatcher from '../core/dispatcher'
 class AuthStore extends Store {
   constructor() {
     super()
-    Dispatcher.onAction(ACTIONS.LOGIN, () => this.loginAction())
+    Dispatcher.onAction(ACTIONS.LOGIN, (data) => this.loginAction(data))
+    Dispatcher.onAction(ACTIONS.REGISTER, (data) => this.registerAction(data))
     Dispatcher.onAction(ACTIONS.LOGOUT, () => this.logoutAction())
   }
   getInitialState() {
@@ -66,21 +67,41 @@ class AuthStore extends Store {
 
   async loginAction(data) {
     try {
+      console.log(data)
       let res = await auth.login(data)
       this.setAuth(res.data)
       this.dispatch('login:success')
     } catch(e) {
       if ( e instanceof UnauthorizedError ) {
-        this.dispatch('login:failure', "Incorrect username or password")
+        this.dispatch({actionType: 'login:failure', error: "Incorrect username or password" })
       } else if ( e instanceof ForbiddenError ) {
-        this.dispatch('login:activate')
+        this.dispatch({actionType: 'login:activate'})
       } else if ( e instanceof NotFoundError ) {
-        this.dispatch('login:failure', "Incorrect username or password")
+        this.dispatch({actionType: 'login:failure',  error: "Incorrect username or password" })
       } else {
-        console.error( e.stack )
       }
+        console.error( e.stack )
     }
   }
+  async registerAction(data) {
+    try {
+      console.log(data)
+      let res = await auth.register(data)
+      this.setAuth(res.data)
+      this.dispatch('login:success')
+    } catch(e) {
+      if ( e instanceof UnauthorizedError ) {
+        this.dispatch({actionType: 'register:failure', error: "Incorrect username or password" })
+      } else if ( e instanceof ForbiddenError ) {
+        this.dispatch({actionType: 'register:activate'})
+      } else if ( e instanceof NotFoundError ) {
+        this.dispatch({actionType: 'register:failure',  error: "Incorrect username or password" })
+      } else {
+      }
+        console.error( e.stack )
+    }
+  }
+
 
   logoutAction() {
     this.clearAuth()

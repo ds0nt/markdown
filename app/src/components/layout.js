@@ -12,24 +12,14 @@ let Layout = {
     view: AppView
   }),
   afterMount: (c, el, update) => {
-    let onNavigate = data => {
-      data.actionType != ACTIONS.NAVIGATE || update({'view': data.view})
-    }
-
-    Dispatcher.register( onNavigate )
+    Dispatcher.onAction(ACTIONS.SET_VIEW,  ({view}) => update({'view': view}))
   },
   render: c => {
     let View = c.state.view
     return <main>
       <Forkme repo="ds0nt/mdpad" />
-      <section class="ui grid">
-        <div class="sixteen column row">
-          <Header />
-        </div>
-        <div class="sixteen column row">
-          <View />
-        </div>
-      </section>
+        <Header />
+        <View />
     </main>
   }
 }

@@ -1,6 +1,6 @@
-import axios from 'axios'
-import { API_URL } from '../core/constants'
+import http from '../core/http'
 
 export default {
-  login: data => axios.get(`${API_URL}/auth/login`, data)
+  login: http.post `/auth/login`,
+  register: http.post `/auth/register`,
 }

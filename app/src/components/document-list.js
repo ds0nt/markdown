@@ -71,20 +71,10 @@ export default {
 
     let list = documents.map(item => <DocumentItem active={item.id === state.selected} item={item} onClick="false" />)
 
-    return <div class="ui vertical menu">
-        <div class="ui inverted search item">
-          <div class="ui icon input">
-            <input type="text" placeholder="Search documents..." />
-            <i class="search link icon"></i>
-          </div>
-          <div class="results"></div>
-        </div>
-      <div class="item">
-
-        <div class="header">Documents</div>
-        <Loader active={state.loading}>Loading</Loader>
-        <div class="menu">{list}</div>
-      </div>
+    return <div id="document-list" class="ui left fixed vertical menu">
+      <div class="ui horizontal divider">NotePad</div>
+      <Loader active={state.loading}>Loading</Loader>
+        {list}
     </div>
   }
 }
