@@ -1,0 +1,7 @@
+port: 5000
+auth_realm: "klouds"
+user_namespace: "user:"
+token_namespace: "token:"
+redis_server: "127.0.0.1:6379"
+redis_password: ""
+hmac_key: "someSaltySalts"

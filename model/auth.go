@@ -44,9 +44,9 @@ func Register(email, password string) (*User, error) {
 	// Hash password
 	hash, err := abdi.Hash(password)
 	if err != nil {
-		fmt.Printf("email: %s, password; %s", email, password)
 		return nil, err
 	}
+
 	user := User{
 		Email:    email,
 		Password: hash,
