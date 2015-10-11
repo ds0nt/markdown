@@ -1,8 +1,8 @@
 import http from '../core/http'
 export default {
-  sync   : ()       => http.get('/documents'),
-  fetch  : (id)     => http.get('/documents/' + id),
-  create : (data)     => http.post('/documents', data ),
-  update : (id, data) => http.put('/documents/' + id, data ),
-  delete : (id)       => http.delete('/documents/' + id),
+  sync   : http.get`/api/documents`,
+  fetch  : id => http.get`/api/documents/${id}`(),
+  create : data => http.post`/api/documents`(data),
+  update : id => http.put`/api/documents/${id}`(),
+  delete : id => http.delete`/api/documents/${id}`(),
 }

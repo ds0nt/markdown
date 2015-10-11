@@ -11,19 +11,25 @@ import {errorFromXHR} from './errors'
 let iox = method =>
   ([url], options={}) =>
     (data) => {
-      let headers = {}
-      let { token } = AuthStore.getState()
-      if (token) {
-        headers.Authorization = `Token ${token}`
-      }
+
       return axios({
         url: `${API_URL}${url}`,
         data,
-        options: assign(headers, options),
+        options,
         method
       })
   }
 
+axios.interceptors.request.use(req => {
+  let { token } = AuthStore.getState()
+  if (token) {
+    req.headers = {
+      Authorization: `Token ${token}`
+    }
+  }
+  console.dir(req)
+  return req
+})
   // Add a response interceptor
 axios.interceptors.response.use(res => res, err => Promise.reject(errorFromXHR(err)))
 

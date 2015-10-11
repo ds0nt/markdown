@@ -69,7 +69,9 @@ class AuthStore extends Store {
     try {
       console.log(data)
       let res = await auth.login(data)
-      this.setAuth(res.data)
+      this.setAuth({
+        token: res.data.access_token
+      })
       this.dispatch('login:success')
     } catch(e) {
       if ( e instanceof UnauthorizedError ) {

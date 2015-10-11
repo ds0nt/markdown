@@ -1,6 +1,5 @@
 module.exports = {
   API_URL       : 'http://localhost:5000',
-  AUTH_HEADER   : 'X-JWT-TOKEN',
   AUTH_DATA_KEY : 'authData',
   ACTIONS       : {
     SET_VIEW         : 'set_view',

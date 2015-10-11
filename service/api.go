@@ -19,7 +19,6 @@ var (
 func main() {
 
 	api := rest.NewApi()
-	api.Use(AuthMiddleware())
 	api.Use(rest.DefaultDevStack...)
 
 	api.Use(&rest.CorsMiddleware{
@@ -27,12 +26,13 @@ func main() {
 		OriginValidator: func(origin string, request *rest.Request) bool {
 			return true // origin == "http://127.0.0.1"
 		},
-		AllowedMethods: []string{"GET", "POST", "PUT"},
+		AllowedMethods: []string{"GET", "POST", "PUT", "OPTIONS", "DELETE"},
 		AllowedHeaders: []string{
-			"Accept", "Content-Type", "X-Custom-Header", "Origin"},
+			"Accept", "Content-Type", "Authorization", "Origin"},
 		AccessControlAllowCredentials: true,
 		AccessControlMaxAge:           3600,
 	})
+	api.Use(AuthMiddleware())
 
 	router, err := rest.MakeRouter(
 		rest.Post("/auth/login", restapi.Login),
@@ -64,24 +64,6 @@ func AuthMiddleware() rest.Middleware {
 			Authenticator: model.AuthenticateToken,
 		},
 	}
-}
-
-type DocumentCollection map[string][]Document
-type Document struct {
-	name string
-	body string
-}
-
-func documents(w rest.ResponseWriter, r *rest.Request) {
-
-	w.WriteJson(DocumentCollection{
-		"documents": []Document{
-			Document{
-				"Document 1",
-				"I am jesus",
-			},
-		},
-	})
 }
 
 //https://github.com/stripe/stripe-go/blob/a6e40c8d67e2563657721d2ab50ef57888b4af7b/example_test.go

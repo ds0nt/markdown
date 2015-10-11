@@ -56,10 +56,13 @@ echo -e "Access Token: $access_token\n"
 
 
 
+echo -e "\n\nget documents without authorization"
+curl -i -s "$API/api/documents" | head -1
+echo -e "Expected 401 Unauthorized\n"
 
 
 # Documents Resource
-echo -e "create document"
+echo -e "\ncreate document"
 document=$(curl -s -H "Authorization: Token $access_token" -H 'Content-Type: application/json' -d '{"name":"api-test document","body":"revision alpha"}' "$API/api/documents")
 echo $document
 
@@ -67,14 +70,14 @@ echo $document
 document_id=$(echo $document | grep -Eo 'id.*' | cut -d' ' -f2 | cut -d',' -f1)
 echo -e "Document Id: $document_id\n"
 
-echo -e "get document"
+echo -e "\n\nget document"
 curl -s -H "Authorization: Token $access_token" "$API/api/documents/$document_id"
 
-echo -e "list documents"
+echo -e "\n\nlist documents"
 curl -s -H "Authorization: Token $access_token" "$API/api/documents"
 
-echo -e "update document"
+echo -e "\n\nupdate document"
 curl -s -H "Authorization: Token $access_token" -X PUT -H 'Content-Type: application/json' -d '{"name":"api-test", "body":"revision beta"}' "$API/api/documents/$document_id"
 
-echo -e "delete document"
-curl -s -H "Authorization: Token $access_token" -X DELETE "$API/api/documents/$document_id"
+echo -e "\n\ndelete document"
+curl -i -s -H "Authorization: Token $access_token" -X DELETE "$API/api/documents/$document_id"
