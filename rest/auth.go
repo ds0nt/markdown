@@ -1,11 +1,11 @@
-package rest
+package auth
 
 import (
 	"log"
 	"net/http"
 
 	"github.com/ant0ine/go-json-rest/rest"
-	"github.com/ds0nt/markdown/model"
+	"github.com/ds0nt/markdown/model/auth"
 )
 
 type loginPayload struct {

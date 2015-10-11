@@ -4,51 +4,77 @@
 
 email="`date -Is`@email.sh"
 
+# Authentication
+
+# /auth/login
 echo -e "send register with malformed json:"
-curl -i -s "$API/auth/login"              \
-  -H "Content-Type: application/json"  \
+curl -i -s -H 'Content-Type: application/json' "$API/auth/register" \
   -d 't!@#$!@#password" }%%%' | head -1
 echo -e "Expected 400 Bad Request\n"
 
 echo -e "send register with short password:"
-curl -i -s "$API/auth/register"              \
-  -H "Content-Type: application/json"  \
+curl -i -s -H 'Content-Type: application/json' "$API/auth/register" \
   -d '{"email":"'$email'","password":"test" }' | head -1
 echo -e "Expected 400 Bad Request\n"
 
 echo -e "send register OK:"
-curl -i -s "$API/auth/register"              \
-  -H "Content-Type: application/json"  \
+curl -i -s -H 'Content-Type: application/json' "$API/auth/register" \
   -d '{"email":"'$email'","password":"testpassword" }' | head -1
 echo -e "Expected 200 OK\n"
 
 echo -e "send register again:"
-curl -i -s "$API/auth/register"              \
-  -H "Content-Type: application/json"  \
+curl -i -s -H 'Content-Type: application/json' "$API/auth/register" \
   -d '{"email":"'$email'","password":"testpassword" }' | head -1
 echo -e "Expected 409 Conflict\n"
 
+# /auth/register
 echo -e "send login with malformed json:"
-curl -i -s "$API/auth/login"              \
-  -H "Content-Type: application/json"  \
+curl -i -s -H 'Content-Type: application/json' "$API/auth/login" \
   -d 't!@#$!@#password" }%%%' | head -1
 echo -e "Expected 400 Bad Request\n"
 
 echo -e "send login with unregistered email / password:"
-curl -i -s "$API/auth/login"              \
-  -H "Content-Type: application/json"  \
+curl -i -s -H 'Content-Type: application/json' "$API/auth/login" \
   -d '{"email":"this-email-doesnt-exist@forky.io","password":"testpassword" }' | head -1
 echo -e "Expected 401 Unauthorized\n"
 
 echo -e "send login with incorrect password:"
-curl -i -s "$API/auth/login"              \
-  -H "Content-Type: application/json"  \
+curl -i -s -H 'Content-Type: application/json' "$API/auth/login" \
   -d '{"email":"'$email'","password":"failpassword" }' | head -1
 echo -e "Expected 401 Unauthorized\n"
 
 echo -e "send login OK:"
-curl -i -s "$API/auth/login"              \
-  -H "Content-Type: application/json"  \
-  -d '{"email":"'$email'","password":"testpassword" }' | grep -E "HTTP|\{|access|\}"
+login=$(curl -i -s -H 'Content-Type: application/json' "$API/auth/login" \
+  -d '{"email":"'$email'","password":"testpassword" }')
+echo "$login" | head -1
 echo -e "Expected 200 OK\n"
-echo '{ "access_token": "..." }'
+
+
+# grab token (grep to line in json, field delimiter \", field 3)
+access_token=$(echo $login | grep -Eo 'access_token.*' | cut -d'"' -f3)
+echo -e "Access Token: $access_token\n"
+
+
+
+
+
+# Documents Resource
+echo -e "create document"
+document=$(curl -s -H "Authorization: Token $access_token" -H 'Content-Type: application/json' -d '{"name":"api-test document","body":"revision alpha"}' "$API/api/documents")
+echo $document
+
+# grab id (grep to line in json, field delimiter \", field 3)
+document_id=$(echo $document | grep -Eo 'id.*' | cut -d' ' -f2 | cut -d',' -f1)
+echo -e "Document Id: $document_id\n"
+
+echo -e "get document"
+curl -s -H "Authorization: Token $access_token" "$API/api/documents/$document_id"
+
+echo -e "list documents"
+curl -s -H "Authorization: Token $access_token" "$API/api/documents"
+
+echo -e "update document"
+curl -s -H "Authorization: Token $access_token" -X PUT -H 'Content-Type: application/json' -d '{"name":"api-test", "body":"revision beta"}' "$API/api/documents/$document_id"
+
+echo -e "delete document"
+curl -s -H "Authorization: Token $access_token" -X DELETE "$API/api/documents/$document_id"

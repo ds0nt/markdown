@@ -2,11 +2,12 @@ package main
 
 import (
 	"log"
+
 	"net/http"
 
 	"github.com/ant0ine/go-json-rest/rest"
 	"github.com/ds0nt/markdown/config"
-	"github.com/ds0nt/markdown/model"
+	"github.com/ds0nt/markdown/model/auth"
 	restapi "github.com/ds0nt/markdown/rest"
 	"github.com/grayj/go-json-rest-middleware-tokenauth"
 )
@@ -36,7 +37,11 @@ func main() {
 	router, err := rest.MakeRouter(
 		rest.Post("/auth/login", restapi.Login),
 		rest.Post("/auth/register", restapi.Register),
-		rest.Get("/api/documents", documents),
+		rest.Get("/api/documents", restapi.GetAllDocuments),
+		rest.Post("/api/documents", restapi.PostDocument),
+		rest.Get("/api/documents/:id", restapi.GetDocument),
+		rest.Put("/api/documents/:id", restapi.PutDocument),
+		rest.Delete("/api/documents/:id", restapi.DeleteDocument),
 	)
 
 	if err != nil {

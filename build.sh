@@ -11,7 +11,11 @@ set -o nounset
 
 cd `dirname $0`/service
 
-$DOTFILES/commands/docker-require.sh redis markdown-redis
+dockerrequire="$DOTFILES/commands/docker-require.sh"
+$dockerrequire redis markdown-redis
+$dockerrequire mysql markdown-mysql
+
+
 go build api.go
 
 killall -9 api 2</dev/null || echo ''

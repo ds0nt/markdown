@@ -11,13 +11,14 @@ import (
 
 // Config for klouds master
 type ConfigScheme struct {
-	Port           string `yaml:"port"`
-	AuthRealm      string `yaml:"auth_realm"`
-	UserNamespace  string `yaml:"user_namespace"`
-	TokenNamespace string `yaml:"token_namespace"`
-	RedisServer    string `yaml:"redis_server"`
-	RedisPassword  string `yaml:"redis_password"`
-	HmacKey        string `yaml:"hmac_key"`
+	Port                  string `yaml:"port"`
+	AuthRealm             string `yaml:"auth_realm"`
+	UserNamespace         string `yaml:"user_namespace"`
+	TokenNamespace        string `yaml:"token_namespace"`
+	RedisServer           string `yaml:"redis_server"`
+	RedisPassword         string `yaml:"redis_password"`
+	MysqlConnectionString string `yaml:"mysql_connection_string"`
+	HmacKey               string `yaml:"hmac_key"`
 }
 
 var (
