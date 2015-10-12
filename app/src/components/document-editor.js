@@ -2,14 +2,41 @@ import element from 'virtual-element'
 import {ACTIONS} from '../core/constants';
 import Dispatcher from '../core/dispatcher';
 import DocumentStore from '../stores/document'
-
+import debounce from 'lodash.debounce'
 
 let DocumentEditor = {
   initialState(props) {
     return {
       loaded: false,
-      body: "I have document powers!",
+      doc: null,
+      saveHandler: () => {}
     }
+  },
+  shouldUpdate(component, nextProps, nextState) {
+    let {props, state, id} = component
+    return state.doc !== nextState.doc
+  },
+
+  beforeUpdate(component, nextProps, nextState) {
+    let {props, state, id} = component
+    state.editor.removeListener("update")
+  },
+
+  afterUpdate(component, prevProps, prevState, setState) {
+    let {props, state, id} = component
+    state.editor.getElement('editor').body.innerHTML = state.doc.body
+
+    let trailingSave = debounce((documentId, body) => {
+      console.log('debounce save')
+      DocumentStore.save(documentId, { body })
+    }, 500, { leading: false, maxWait: 5000,  trailing: true, })
+
+    state.editor.on("update", () => {
+      // immediately cache the html bodyz
+      let body = state.editor.getElement('editor').body.innerHTML
+      let documentId = state.doc.id
+      trailingSave(documentId, body)
+    })
   },
 
   async afterMount(c, el, setState) {
@@ -26,18 +53,21 @@ let DocumentEditor = {
           document.documentElement.offsetHeight)
     })
     editor.load()
-    editor.on("update", () => {
-      // DocumentStore.save()
+    setState({
+      editor: editor
     })
-    Dispatcher.register(action => {
-      if (action.actionType == ACTIONS.SELECT_DOCUMENT) {
-        editor.getElement('editor').body.innerHTML = DocumentStore.getState()[action.id].body
+    DocumentStore.onAction('update', async(data) => {
+      try {
+        let doc = DocumentStore.getState().selected
+        setState({
+          loaded: true,
+          doc: doc,
+        })
+      } catch (e) {
+        console.error(e)
       }
     })
-
-    setState({ loaded: true })
   },
-
   render({ props, state }, setState) {
     return <div id="epiceditor"></div>
   }

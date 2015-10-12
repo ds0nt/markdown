@@ -64,9 +64,11 @@ let render = c => {
   <div class="ui container">
     <div class="register-page">
       <div class={`ui ${state.submitting ? 'loading' : ''} ${state.error !== '' ? 'error' : ''} form`}>
+        <h2>Register</h2>
         <div class="field">
           <label>E-mail</label>
           <input type="email" onChange={createFieldHandler('email')} value={state.email} placeholder="joe@schmoe.com" />
+          <label>Password</label>
           <input type="password" onChange={createFieldHandler('password')} value={state.password} placeholder="Password" />
         </div>
         <div onClick={handleSubmit} class="ui submit button">Submit</div>

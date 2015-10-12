@@ -20,10 +20,12 @@ class DocumentStore extends Store {
   constructor() {
     super()
     Dispatcher.onAction(ACTIONS.SYNC_DOCUMENTS, () => this.sync())
+    Dispatcher.onAction(ACTIONS.SELECT_DOCUMENT, (data) => this.select(data))
   }
   getInitialState() {
     return {
-      documents: []
+      documents: [],
+      selected: null,
     }
   }
   async sync() {
@@ -33,7 +35,30 @@ class DocumentStore extends Store {
         documents: data
       })
     } catch (e) {
-      this.emit('sync:failure')
+      this.dispatch({
+        actionType: 'sync:failure'
+      })
+    }
+  }
+  async select({ id }) {
+    try {
+      let { data } = await documents.fetch(id)
+      this.setState({
+        selected: data,
+      })
+    } catch (e) {
+      this.dispatch({
+        actionType: 'select:failure'
+      })
+    }
+  }
+  async save(id, data) {
+    try {
+      let res = await documents.update(id, data)
+    } catch (e) {
+      this.dispatch({
+        actionType: 'save:failure'
+      })
     }
   }
 }

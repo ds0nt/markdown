@@ -62,21 +62,23 @@ let render = c => {
     }
   }
   return (
-  <div class="ui container">
-    <div class="login-page">
+  <div class="ui fluid doubling grid centered container">
+    <div class="four wide column login-page">
       <div class={`ui ${state.submitting ? 'loading' : ''} ${state.error !== '' ? 'error' : ''} form`}>
+        <h2>Login</h2>
         <div class="field">
           <label>E-mail</label>
           <input type="email" onChange={createFieldHandler('email')} value={state.email} placeholder="joe@schmoe.com" />
+          <label>Password</label>
           <input type="password" onChange={createFieldHandler('password')} value={state.password} placeholder="Password" />
         </div>
         <div onClick={handleSubmit} class="ui submit button">Submit</div>
         {
           state.error !== '' ?
-        <div class="ui error message">
-          <div class="header">Login Error</div>
-          <p>{state.error}</p>
-        </div> : ''
+          <div class="ui error message">
+            <div class="header">Login Error</div>
+            <p>{state.error}</p>
+          </div> : ''
         }
       </div>
       <p class="login-signup-link"><a onClick={signup}>Need an account?</a></p>

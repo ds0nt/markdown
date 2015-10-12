@@ -44,21 +44,13 @@ export default {
   },
   afterMount(component, el, setState) {
     setState({
-      docsHandler: DocumentStore.onAction('update', state => {
+      docsHandler: DocumentStore.onAction('update', data => {
         setState({
-          documents: state.documents,
+          documents: data.documents,
+          selected: data.selected ? data.selected.id : null,
           loading: false,
         })
       })
-    })
-
-    // document selected listener
-    Dispatcher.register(action => {
-      if (action.actionType == ACTIONS.SELECT_DOCUMENT) {
-        setState({
-          selected: action.id
-        })
-      }
     })
   },
   beforeUnmount (component, el) {
@@ -68,8 +60,7 @@ export default {
   render({ props, state }, setState) {
     let { documents } = state
 
-
-    let list = documents.map(item => <DocumentItem active={item.id === state.selected} item={item} onClick="false" />)
+    let list = documents.map(item => <DocumentItem active={item.id === state.selected} item={item} />)
 
     return <div id="document-list" class="ui left fixed vertical menu">
       <div class="ui horizontal divider">NotePad</div>

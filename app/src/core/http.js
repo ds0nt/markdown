@@ -9,7 +9,7 @@ import {errorFromXHR} from './errors'
 //
 
 let iox = method =>
-  ([url], options={}) =>
+  (url, options={}) =>
     (data) => {
 
       return axios({
@@ -27,7 +27,6 @@ axios.interceptors.request.use(req => {
       Authorization: `Token ${token}`
     }
   }
-  console.dir(req)
   return req
 })
   // Add a response interceptor

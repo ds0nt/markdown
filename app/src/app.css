@@ -1,6 +1,12 @@
 body {
+  color: #ABB2BF !important;
   background: #282C34;
   min-height: 100vh
+}
+
+.login-page label, .register-page label {
+  display: block;
+  color: #ABB2BF !important;
 }
 
 #top-header {
