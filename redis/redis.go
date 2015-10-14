@@ -13,6 +13,7 @@ var (
 )
 
 func init() {
+	time.Sleep(5000 * time.Millisecond)
 	Pool = &redis.Pool{
 		MaxIdle:     3,
 		IdleTimeout: 240 * time.Second,

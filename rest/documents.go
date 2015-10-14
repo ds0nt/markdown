@@ -2,19 +2,19 @@ package auth
 
 import (
 	"net/http"
+	"regexp"
+	"strings"
 
 	"github.com/ant0ine/go-json-rest/rest"
 	model "github.com/ds0nt/markdown/model/documents"
 )
 
-// GetAllDocuments
 func GetAllDocuments(w rest.ResponseWriter, r *rest.Request) {
 	documents := []model.Document{}
 	model.DB.Find(&documents)
 	w.WriteJson(&documents)
 }
 
-// GetDocument
 func GetDocument(w rest.ResponseWriter, r *rest.Request) {
 	id := r.PathParam("id")
 	document := model.Document{}
@@ -25,7 +25,6 @@ func GetDocument(w rest.ResponseWriter, r *rest.Request) {
 	w.WriteJson(&document)
 }
 
-// PostDocument
 func PostDocument(w rest.ResponseWriter, r *rest.Request) {
 	document := model.Document{}
 	if err := r.DecodeJsonPayload(&document); err != nil {
@@ -39,7 +38,6 @@ func PostDocument(w rest.ResponseWriter, r *rest.Request) {
 	w.WriteJson(&document)
 }
 
-// PutDocument
 func PutDocument(w rest.ResponseWriter, r *rest.Request) {
 
 	id := r.PathParam("id")
@@ -54,8 +52,12 @@ func PutDocument(w rest.ResponseWriter, r *rest.Request) {
 		rest.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
-
-	document.Name = updated.Name
+	if i := strings.Index(document.Body, "\n"); i > 0 {
+		document.Name = document.Body[0:i]
+	} else {
+		document.Name = document.Body
+	}
+	document.Name = regexp.MustCompile("^[^A-Za-z0-9]*").ReplaceAllString(document.Name, "")
 	document.Body = updated.Body
 
 	if err := model.DB.Save(&document).Error; err != nil {
@@ -65,7 +67,6 @@ func PutDocument(w rest.ResponseWriter, r *rest.Request) {
 	w.WriteJson(&document)
 }
 
-// DeleteDocument
 func DeleteDocument(w rest.ResponseWriter, r *rest.Request) {
 	id := r.PathParam("id")
 	document := model.Document{}

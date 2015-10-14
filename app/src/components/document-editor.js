@@ -24,7 +24,7 @@ let DocumentEditor = {
 
   afterUpdate(component, prevProps, prevState, setState) {
     let {props, state, id} = component
-    state.editor.getElement('editor').body.innerHTML = state.doc.body
+    state.editor.importFile(state.doc.id, state.doc.body)
 
     let trailingSave = debounce((documentId, body) => {
       console.log('debounce save')
@@ -33,7 +33,7 @@ let DocumentEditor = {
 
     state.editor.on("update", () => {
       // immediately cache the html bodyz
-      let body = state.editor.getElement('editor').body.innerHTML
+      let body = state.editor.exportFile()
       let documentId = state.doc.id
       trailingSave(documentId, body)
     })

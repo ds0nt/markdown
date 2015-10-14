@@ -23,12 +23,12 @@ var config = conf.Config
 
 func init() {
 	var err error
+
 	DB, err = gorm.Open("mysql", config.MysqlConnectionString)
 	if err != nil {
 		log.Fatalf("Got error when connect database, the error is '%v'", err)
 	}
 
 	DB.LogMode(true)
-
 	DB.AutoMigrate(&Document{})
 }

@@ -1,8 +1,0 @@
-port: 5000
-auth_realm: "klouds"
-user_namespace: "user:"
-token_namespace: "token:"
-redis_server: "127.0.0.1:6379"
-redis_password: ""
-hmac_key: "someSaltySalts"
-mysql_connection_string: "root:e104f617-fb72-48b9-9928-ad222c4696d6@/markdown-mysql?charset=utf8&parseTime=True"
