@@ -1,12 +1,12 @@
 import element from 'virtual-element'
 
-import DocumentEditor from './document-editor'
-import DocumentList from './document-list'
-
+import DocumentEditor from './doc-editor'
+import DocumentList from './doc-list'
+import DocumentToolbar from './doc-toolbar'
 export default {
   render: () =>
     <div class="ui container">
-      <Toolbar />
+      <DocumentToolbar />
       <DocumentList title="documents" />
       <DocumentEditor />
     </div>

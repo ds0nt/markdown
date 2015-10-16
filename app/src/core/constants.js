@@ -9,6 +9,8 @@ module.exports = {
     REGISTER           : 'register',
     SYNC_DOCUMENTS   : 'sync_documents',
     CREATE_DOCUMENT  : 'create_document',
+    SAVE_DOCUMENT  : 'save_document',
+    REMOVE_DOCUMENT  : 'remove_document',
     SELECT_DOCUMENT  : 'select_document',
     ARCHIVE_DOCUMENT : 'archive_document',
   },

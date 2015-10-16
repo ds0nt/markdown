@@ -31,6 +31,12 @@ func PostDocument(w rest.ResponseWriter, r *rest.Request) {
 		rest.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
+	if i := strings.Index(document.Body, "\n"); i > 0 {
+		document.Name = document.Body[0:i]
+	} else {
+		document.Name = document.Body
+	}
+	document.Name = regexp.MustCompile("^[^A-Za-z0-9]*").ReplaceAllString(document.Name, "")
 	if err := model.DB.Save(&document).Error; err != nil {
 		rest.Error(w, err.Error(), http.StatusInternalServerError)
 		return

@@ -20,10 +20,11 @@ import {
 import {
   UnauthorizedError,
   ForbiddenError,
+  ConflictError,
   NotFoundError,
 } from '../core/errors'
 import Store from '../core/store'
-import auth from '../rest/auth'
+import auth from '../http/auth'
 import Dispatcher from '../core/dispatcher'
 
 class AuthStore extends Store {
@@ -92,15 +93,11 @@ class AuthStore extends Store {
       this.setAuth(res.data)
       this.dispatch('login:success')
     } catch(e) {
-      if ( e instanceof UnauthorizedError ) {
-        this.dispatch({actionType: 'register:failure', error: "Incorrect username or password" })
-      } else if ( e instanceof ForbiddenError ) {
-        this.dispatch({actionType: 'register:activate'})
-      } else if ( e instanceof NotFoundError ) {
-        this.dispatch({actionType: 'register:failure',  error: "Incorrect username or password" })
+      if ( e instanceof ConflictError ) {
+        this.dispatch({actionType: 'register:failure',  error: "That account already exists" })
       } else {
+        this.dispatch({actionType: 'register:failure', error: e.Error })
       }
-        console.error( e.stack )
     }
   }
 

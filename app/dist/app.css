@@ -1,7 +1,7 @@
 body {
   color: #ABB2BF !important;
   background: #282C34;
-  min-height: 100vh;
+  height: 100vh;
 }
 
 .login-page label,
@@ -10,8 +10,25 @@ body {
   color: #ABB2BF !important;
 }
 
-#top-header {
+#toolbar {
+  position: absolute;
   background: #21252B;
+  top: 0;
+  right: 0;
+  left: 300px;
+  height: 40px;
+}
+
+#toolbar button {
+  color: #ABB2BF !important;
+}
+
+#document-list {
+  position: absolute;
+  left: 0;
+  width: 300px;
+  bottom: 0;
+  top: 0;
 }
 
 #document-list {
@@ -28,13 +45,11 @@ body {
   color: #ABB2BF !important;
 }
 
-.app-view {
-  padding-top: 40px;
-}
-
 #epiceditor {
+  position: absolute;
+  left: 300px;
+  top: 50px;
+  right: 0;
+  bottom: 10px;
   background: #282C34;
-  overflow-y: auto;
-  min-height: 100vh;
-  height: auto;
 }

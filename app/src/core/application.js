@@ -13,11 +13,12 @@ class Application {
     this.router = Router({
       '/': [this.authed, this.app],
       '/login': [this.unauthed, this.login],
-      '/signup': [this.unauthed, this.signup],
+      '/register': [this.unauthed, this.register],
       '/logout': [this.authed, this.logout],
     })
     this.router.init()
-    this.router.setRoute('/')
+    let route = window.location.hash.slice(2)
+    this.router.setRoute(route)
     Dispatcher.onAction(ACTIONS.SET_ROUTE, (data) => this.router.setRoute(data.route))
     AuthStore.onAction('update', (state) => this.router.setRoute( state.token ? '/' : '/login') )
   }
@@ -34,8 +35,9 @@ class Application {
 
   unauthed() {
     if (AuthStore.isAuthenticated()) {
-      console.log("Already Authed: redirecting to /");
-      this.setRoute('/')
+      Dispatcher.dispatch({
+        actionType: ACTIONS.LOGOUT
+      })
     }
   }
 
@@ -61,7 +63,7 @@ class Application {
     })
   }
 
-  signup() {
+  register() {
     Dispatcher.dispatch({
       actionType : ACTIONS.SET_VIEW,
       view   : RegisterView

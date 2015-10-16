@@ -2,12 +2,8 @@
 
 cd $(dirname $0)/..
 
+docker exec markdown-app ./app/build.sh /src/app/dist
 
-go build .
-./app/develop.sh
-source scripts/docker-alpha.sh
-cp -urv config.yml markdown app .docker/markdown-app/app
-docker restart markdown-app
-docker restart markdown-proxy
-./scripts/api-test.sh
+# docker stop markdown-proxy
+# docker restart markdown-proxy
 exit
