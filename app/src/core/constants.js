@@ -13,5 +13,6 @@ module.exports = {
     REMOVE_DOCUMENT  : 'remove_document',
     SELECT_DOCUMENT  : 'select_document',
     ARCHIVE_DOCUMENT : 'archive_document',
+    OPEN_IMPORT : 'open_import',
   },
 };

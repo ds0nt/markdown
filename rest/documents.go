@@ -1,6 +1,7 @@
 package auth
 
 import (
+	"fmt"
 	"net/http"
 	"regexp"
 	"strings"
@@ -10,15 +11,18 @@ import (
 )
 
 func GetAllDocuments(w rest.ResponseWriter, r *rest.Request) {
+	email := fmt.Sprintf("%v", r.Env["REMOTE_USER"])
 	documents := []model.Document{}
-	model.DB.Find(&documents)
+	model.DB.Where("email = ?", email).Find(&documents)
 	w.WriteJson(&documents)
 }
 
 func GetDocument(w rest.ResponseWriter, r *rest.Request) {
+	email := fmt.Sprintf("%v", r.Env["REMOTE_USER"])
 	id := r.PathParam("id")
+
 	document := model.Document{}
-	if model.DB.First(&document, id).Error != nil {
+	if model.DB.Where("email = ?", email).First(&document, id).Error != nil {
 		rest.NotFound(w, r)
 		return
 	}
@@ -26,6 +30,7 @@ func GetDocument(w rest.ResponseWriter, r *rest.Request) {
 }
 
 func PostDocument(w rest.ResponseWriter, r *rest.Request) {
+	email := fmt.Sprintf("%v", r.Env["REMOTE_USER"])
 	document := model.Document{}
 	if err := r.DecodeJsonPayload(&document); err != nil {
 		rest.Error(w, err.Error(), http.StatusInternalServerError)
@@ -37,6 +42,8 @@ func PostDocument(w rest.ResponseWriter, r *rest.Request) {
 		document.Name = document.Body
 	}
 	document.Name = regexp.MustCompile("^[^A-Za-z0-9]*").ReplaceAllString(document.Name, "")
+	document.Email = email
+
 	if err := model.DB.Save(&document).Error; err != nil {
 		rest.Error(w, err.Error(), http.StatusInternalServerError)
 		return
@@ -45,10 +52,11 @@ func PostDocument(w rest.ResponseWriter, r *rest.Request) {
 }
 
 func PutDocument(w rest.ResponseWriter, r *rest.Request) {
+	email := fmt.Sprintf("%v", r.Env["REMOTE_USER"])
 
 	id := r.PathParam("id")
 	document := model.Document{}
-	if model.DB.First(&document, id).Error != nil {
+	if model.DB.Where("email = ?", email).First(&document, id).Error != nil {
 		rest.NotFound(w, r)
 		return
 	}
@@ -74,9 +82,10 @@ func PutDocument(w rest.ResponseWriter, r *rest.Request) {
 }
 
 func DeleteDocument(w rest.ResponseWriter, r *rest.Request) {
+	email := fmt.Sprintf("%v", r.Env["REMOTE_USER"])
 	id := r.PathParam("id")
 	document := model.Document{}
-	if model.DB.First(&document, id).Error != nil {
+	if model.DB.Where("email = ?", email).First(&document, id).Error != nil {
 		rest.NotFound(w, r)
 		return
 	}

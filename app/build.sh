@@ -7,14 +7,17 @@ else
   output=$(realpath $output)
 fi
 
-cd $(dirname $0)
+build() {
+  local dist="$1"
+  [ -d $dist ] || mkdir -p $dist
+  echo "browserify $(pwd)/src/app.js"
+  browserify -d -e src/app.js -t babelify -o "$dist/app.js" -v
 
-[ -d $output ] || mkdir -p $output
-echo "browserify $(pwd)/src/app.js"
-browserify -d -e src/app.js -t babelify -o "$output/app.js" -v
+  echo "myth $(pwd)/src/app.css"
+  myth src/app.css "$dist/app.css"
 
-echo "myth $(pwd)/src/app.css"
-myth src/app.css "$output/app.css"
+  echo "copy echo $(pwd)/src/public"
+  cp -urv src/public/* "$dist/"
+}
 
-echo "copy echo $(pwd)/src/public"
-cp -urv src/public/* "$output/"
+build $output

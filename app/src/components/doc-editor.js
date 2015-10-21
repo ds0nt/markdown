@@ -26,7 +26,9 @@ let DocumentEditor = {
 
   beforeUpdate(component, nextProps, nextState) {
     let {props, state, id} = component
-    state.editor.removeListener("update")
+    if (typeof state.editor !== 'undefined') {
+      state.editor.removeListener("update")
+    }
     state.offSave.off()
   },
 

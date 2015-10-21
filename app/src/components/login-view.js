@@ -4,17 +4,6 @@ import Dispatcher from '../core/dispatcher'
 import { ACTIONS } from '../core/constants'
 
 
-function handleSubmit( e, component, setState ) {
-  setState({
-    submitting: true,
-    error: ''
-  })
-  Dispatcher.dispatch({
-    actionType : ACTIONS.LOGIN,
-    email   : component.state.email,
-    password   : component.state.password
-  })
-}
 
 let initialState = () => {
   return {
@@ -40,12 +29,6 @@ let beforeUnmount = (component) => {
   let {state} = component
   state.loginHandler.off()
 }
-function signup() {
-  Dispatcher.dispatch({
-    actionType: ACTIONS.SET_ROUTE,
-    route: '/signup'
-  })
-}
 
 let render = c => {
   let { state, props } = c
@@ -54,34 +37,57 @@ let render = c => {
     buttonContent = (<img src="/img/loading.gif" alt="Logging in..." />)
   }
 
-  function createFieldHandler( name ) {
-    return (e, c, setState) => {
-      let update = {}
-      update[ name ] = e.target.value
-      setState( update )
-    }
+  let onChangeField = name => (e, c, setState) => {
+    setState({
+      [name]: e.target.value
+    })
   }
+  function signup() {
+    Dispatcher.dispatch({
+      actionType: ACTIONS.SET_ROUTE,
+      route: '/register'
+    })
+  }
+
+  function handleSubmit( e, component, setState ) {
+    e.preventDefault()
+    setState({
+      submitting: true,
+      error: ''
+    })
+    Dispatcher.dispatch({
+      actionType : ACTIONS.LOGIN,
+      email   : component.state.email,
+      password   : component.state.password
+    })
+    return false
+  }
+
   return (
   <div class="ui fluid doubling grid centered container">
-    <div class="four wide column login-page">
-      <div class={`ui ${state.submitting ? 'loading' : ''} ${state.error !== '' ? 'error' : ''} form`}>
-        <h2>Login</h2>
-        <div class="field">
-          <label>E-mail</label>
-          <input name="email" type="email" onChange={createFieldHandler('email')} value={state.email} placeholder="joe@schmoe.com" />
-          <label>Password</label>
-          <input name="password" type="password" onChange={createFieldHandler('password')} value={state.password} placeholder="Password" />
+    <div class="row">
+      <div class="four wide column login-page">
+        <div class={`ui ${state.submitting ? 'loading' : ''} ${state.error !== '' ? 'error' : ''} form`}>
+          <form>
+            <h2>Login</h2>
+            <div class="field">
+              <label>E-mail</label>
+              <input name="email" type="email" onChange={onChangeField('email')} value={state.email} placeholder="joe@schmoe.com" />
+              <label>Password</label>
+              <input name="password" type="password" onChange={onChangeField('password')} value={state.password} placeholder="Password" />
+            </div>
+            <button type="button" onClick={handleSubmit} class="ui submit button">{buttonContent}</button>
+          {
+            state.error !== '' ?
+            <div class="ui error message">
+              <div class="header">Login Error</div>
+              <p>{state.error}</p>
+            </div> : ''
+          }
+          </form>
         </div>
-        <div onClick={handleSubmit} class="ui submit button">{buttonContent}</div>
-        {
-          state.error !== '' ?
-          <div class="ui error message">
-            <div class="header">Login Error</div>
-            <p>{state.error}</p>
-          </div> : ''
-        }
+        <p class="login-signup-link"><a onClick={signup}>Need an account?</a></p>
       </div>
-      <p class="login-signup-link"><a onClick={signup}>Need an account?</a></p>
     </div>
   </div>
   )

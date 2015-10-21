@@ -35,19 +35,20 @@ let DocumentItem = {
 export default {
   name: 'DocumentList',
   initialState(props) {
-    let { documents=[] } = DocumentStore.getState()
     return {
-      documents,
+      documents: [],
       selected: null,
-      loading: true,
+      loading: false,
       docsHandler: { off : () => {}}
     }
   },
   afterMount(component, el, setState) {
+    let { documents=[] } = DocumentStore.getState()
     setState({
+      documents: documents,
       docsHandler: DocumentStore.onAction('update', data => {
         setState({
-          documents: data.documents,
+          documents: DocumentStore.getState().documents,
           selected: data.selected ? data.selected.id : null,
           loading: false,
         })

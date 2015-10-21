@@ -11,6 +11,7 @@ import (
 
 type Document struct {
 	Id        int64     `json:"id"`
+	Email     string    `sql:"type:varchar(100);" json:"email"`
 	Name      string    `sql:"size:1024" json:"name"`
 	Body      string    `sql:"size:65536" json:"body"`
 	CreatedAt time.Time `json:"createdAt"`

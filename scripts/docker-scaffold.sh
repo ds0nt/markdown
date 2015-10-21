@@ -1,6 +1,7 @@
 #!/bin/bash
 source $(dirname $0)/docker-alpha.sh
 
+cd $(dirname $0)/..
 
 can_base .docker
 
@@ -20,6 +21,7 @@ redis_port=$(can_i_have_port 6379)
 docker kill markdown-app 2>/dev/null
 docker rm markdown-app 2>/dev/null
 
+go build api.go
 docker build -t markdown-app .
 docker run -d\
           -P \
@@ -28,6 +30,7 @@ docker run -d\
           --link=markdown-mysql:markdown-mysql \
           --name=markdown-app \
           markdown-app
+
 
 http_port=$(docker port markdown-app 8080 | cut -d: -f2)
 api_port=$(docker port markdown-app 5000 | cut -d: -f2)
@@ -44,3 +47,6 @@ docker run --restart=always -d \
          -p 5000:5000 \
          --name="markdown-proxy" \
          haproxy
+
+
+docker exec markdown-app bash -c 'cd app && watchman src ./build.sh'
