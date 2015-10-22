@@ -16,10 +16,7 @@ let Loader = {
 let DocumentItem = {
   render: c => {
     let _item = c.props.item
-    let select = () => Dispatcher.dispatch({
-      actionType: ACTIONS.SELECT_DOCUMENT,
-      id: _item.id
-    })
+    let select = () => Dispatcher.dispatchAction(ACTIONS.SELECT_DOCUMENT, { id: _item.id  })
     let Wrap = {
       render ({props}) {
         if (c.props.active)

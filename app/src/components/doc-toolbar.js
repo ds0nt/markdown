@@ -7,22 +7,20 @@ let Toolbar = {
     $(el).find(".dropdown").dropdown()
   },
   render() {
-    let newDocument = () => Dispatcher.dispatch({
-      actionType: ACTIONS.CREATE_DOCUMENT,
-    })
-    let removeDocument = () => Dispatcher.dispatch({
-      actionType: ACTIONS.REMOVE_DOCUMENT,
-    })
-    let saveDocument = () => Dispatcher.dispatch({
-      actionType: ACTIONS.SAVE_DOCUMENT,
-    })
-
+    let newDocument = () => Dispatcher.dispatchAction(ACTIONS.CREATE_DOCUMENT)
+    let removeDocument = () => Dispatcher.dispatchAction(ACTIONS.REMOVE_DOCUMENT)
+    let saveDocument = () => Dispatcher.dispatchAction(ACTIONS.SAVE_DOCUMENT)
+    let previewDocument = () => Dispatcher.dispatchAction(ACTIONS.PREVIEW_DOCUMENT)
+    let fullScreenDocument = () => Dispatcher.dispatchAction(ACTIONS.FULLSCREEN_DOCUMENT)
+    
     return <div id="toolbar" class="ui stacking icon basic buttons">
       <button class="ui button" onClick={newDocument}>
         <i class="plus icon"></i>
       </button>
       <button class="ui button" onClick={removeDocument}><i class="trash icon"></i></button>
       <button class="ui button" onClick={saveDocument}><i class="save icon"></i></button>
+      <button class="ui button" onClick={previewDocument}><i class="preview icon"></i></button>
+      <button class="ui button" onClick={fullScreenDocument}><i class="full screen icon"></i></button>
       <div class="ui dropdown button">
         <div class="text">Settings</div>
         <i class="dropdown icon"></i>

@@ -55,6 +55,7 @@ let DocumentEditor = {
 
   async afterMount(c, el, setState) {
     let editor = new EpicEditor({
+      clientSideStorage: false,
       basePath: 'epiceditor',
       autogrow: true,
       minHeight: () => Math.max(
@@ -68,6 +69,8 @@ let DocumentEditor = {
     setState({
       editor: editor
     })
+    Dispatcher.onAction(ACTIONS.FULLSCREEN_DOCUMENT, () => editor.enterFullscreen())
+    Dispatcher.onAction(ACTIONS.PREVIEW_DOCUMENT, () => editor.is('preview') ? editor.edit() : editor.preview())
     DocumentStore.onAction('update', async(data) => {
       try {
         let doc = DocumentStore.getState().selected

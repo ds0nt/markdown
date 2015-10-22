@@ -14,5 +14,7 @@ module.exports = {
     SELECT_DOCUMENT  : 'select_document',
     ARCHIVE_DOCUMENT : 'archive_document',
     OPEN_IMPORT : 'open_import',
+    PREVIEW_DOCUMENT : 'preview_document',
+    FULLSCREEN_DOCUMENT  : 'fullscreen_document ',
   },
 };
