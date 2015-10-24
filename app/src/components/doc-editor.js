@@ -1,5 +1,4 @@
 import element from 'virtual-element'
-import {ACTIONS} from '../core/constants';
 import Dispatcher from '../core/dispatcher';
 import DocumentStore from '../stores/document'
 import debounce from 'lodash.debounce'

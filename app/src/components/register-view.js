@@ -1,7 +1,6 @@
 import element from 'virtual-element'
 import AuthStore from '../stores/auth'
 import Dispatcher from '../core/dispatcher'
-import { ACTIONS } from '../core/constants'
 
 
 let initialState = () => {

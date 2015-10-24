@@ -1,5 +1,4 @@
-import element from 'virtual-element'
-import {ACTIONS} from '../core/constants';
+ import element from 'virtual-element'
 import Dispatcher from '../core/dispatcher';
 
 let Dropdown = {
@@ -18,7 +17,7 @@ let Dropdown = {
     }
 
     let submit = () => {
-      alert(state.url)
+      Dispatcher.dispatchAction(ACTIONS.IMPORT_URL, { url: state.url })
     }
 
     return <div class="ui basic modal">

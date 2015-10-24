@@ -1,11 +1,11 @@
 import { Router } from 'director'
 import AuthStore from '../stores/auth'
 import Layout from '../components/layout'
-import { ACTIONS } from '../core/constants'
 import AppView from '../components/app-view'
+import DocView from '../components/doc-view'
 import LoginView from '../components/login-view'
 import RegisterView from '../components/register-view'
-import Dispatcher from '../core/dispatcher'
+import Dispatcher from './dispatcher'
 
 class Application {
   constructor() {
@@ -15,6 +15,7 @@ class Application {
       '/login': [this.unauthed, this.login],
       '/register': [this.unauthed, this.register],
       '/logout': [this.authed, this.logout],
+      '/doc/:id': [this.authed, this.document],
     })
     this.router.init()
     let route = window.location.hash.slice(2)
@@ -35,37 +36,38 @@ class Application {
 
   unauthed() {
     if (AuthStore.isAuthenticated()) {
-      Dispatcher.dispatch({
-        actionType: ACTIONS.LOGOUT
+      Dispatcher.dispatchAction(ACTIONS.LOGOUT, {
       })
     }
   }
 
   app() {
-    Dispatcher.dispatch({
-      actionType: ACTIONS.SYNC_DOCUMENTS
+    Dispatcher.dispatchAction(ACTIONS.SYNC_DOCUMENTS, {
     })
-    Dispatcher.dispatch({
-      actionType : ACTIONS.SET_VIEW,
+    Dispatcher.dispatchAction(ACTIONS.SET_VIEW, {
       view   : AppView
     })
   }
 
+  document(id) {
+    Dispatcher.dispatchAction(ACTIONS.SET_VIEW, {
+      view   : DocView,
+      documentId: id,
+    })
+  }
+
   login() {
-    Dispatcher.dispatch({
-      actionType : ACTIONS.SET_VIEW,
+    Dispatcher.dispatchAction(ACTIONS.SET_VIEW, {
       view   : LoginView
     })
   }
   logout() {
-    Dispatcher.dispatch({
-      actionType: ACTIONS.LOGOUT
+    Dispatcher.dispatchAction(ACTIONS.LOGOUT, {
     })
   }
 
   register() {
-    Dispatcher.dispatch({
-      actionType : ACTIONS.SET_VIEW,
+    Dispatcher.dispatchAction(ACTIONS.SET_VIEW, {
       view   : RegisterView
     })
   }

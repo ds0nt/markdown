@@ -23,12 +23,35 @@ body {
   color: #ABB2BF !important;
 }
 
-#document-list {
+#chat {
   position: absolute;
   left: 0;
   width: 300px;
   bottom: 0;
   top: 0;
+  padding-bottom: 50px;
+}
+
+#chat-form {
+  position: absolute;
+  bottom: 10px;
+  left: 10px;
+  width: 280px;
+  height: 30px;
+}
+
+#chat-form input {
+  width: 100%;
+  height: 100%;
+}
+
+#document-list {
+  position: absolute;
+  left: 300px;
+  top: 50px;
+  right: 0;
+  bottom: 10px;
+  background: #282C34;
 }
 
 #document-list {

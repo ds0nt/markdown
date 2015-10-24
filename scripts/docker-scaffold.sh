@@ -21,7 +21,7 @@ redis_port=$(can_i_have_port 6379)
 docker kill markdown-app 2>/dev/null
 docker rm markdown-app 2>/dev/null
 
-go build api.go
+go build .
 docker build -t markdown-app .
 docker run -d\
           -P \
@@ -41,7 +41,7 @@ docker kill markdown-proxy 2>/dev/null
 docker rm markdown-proxy 2>/dev/null
 
 docker run --restart=always -d \
-         -v "`pwd`/haproxy":/usr/local/etc/haproxy \
+         -v "`pwd`/scripts":/usr/local/etc/haproxy \
          --link=markdown-app:markdown-app \
          -p 80:80     \
          -p 5000:5000 \

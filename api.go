@@ -45,6 +45,7 @@ func main() {
 	router, err := rest.MakeRouter(
 		rest.Post("/auth/login", restapi.Login),
 		rest.Post("/auth/register", restapi.Register),
+		rest.Post("/api/importurl", restapi.ImportUrl),
 		rest.Get("/api/documents", restapi.GetAllDocuments),
 		rest.Post("/api/documents", restapi.PostDocument),
 		rest.Get("/api/documents/:id", restapi.GetDocument),

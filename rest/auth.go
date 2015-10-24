@@ -28,6 +28,8 @@ type registerResponse struct {
 	Token string `json:"access_token"`
 }
 
+// Login Route
+// @route Post /login
 func Login(w rest.ResponseWriter, r *rest.Request) {
 	account := loginPayload{}
 
@@ -52,6 +54,8 @@ func Login(w rest.ResponseWriter, r *rest.Request) {
 	})
 }
 
+// Register Route
+// @route Post /register
 func Register(w rest.ResponseWriter, r *rest.Request) {
 	account := registerPayload{}
 

@@ -13,7 +13,6 @@
  *   - logout:success
  */
 import {
-  ACTIONS,
   AUTH_HEADER,
   AUTH_DATA_KEY,
 } from '../core/constants'
@@ -24,7 +23,7 @@ import {
   NotFoundError,
 } from '../core/errors'
 import Store from '../core/store'
-import auth from '../http/auth'
+import api from '../http/api'
 import Dispatcher from '../core/dispatcher'
 
 class AuthStore extends Store {
@@ -69,7 +68,7 @@ class AuthStore extends Store {
   async loginAction(data) {
     try {
       console.log(data)
-      let res = await auth.login(data)
+      let res = await api.login(data)
       this.setAuth({
         token: res.data.access_token
       })
@@ -89,7 +88,7 @@ class AuthStore extends Store {
   async registerAction(data) {
     try {
       console.log(data)
-      let res = await auth.register(data)
+      let res = await api.register(data)
       this.setAuth(res.data)
       this.dispatch('login:success')
     } catch(e) {

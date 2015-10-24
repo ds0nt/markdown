@@ -1,6 +1,5 @@
 import element from 'virtual-element'
 
-import {ACTIONS} from '../core/constants';
 import Dispatcher from '../core/dispatcher';
 import DocumentStore from '../stores/document'
 
@@ -10,22 +9,6 @@ let Loader = {
     return <div class={`ui ${props.active ? "active" : ""} dimmer`}>
       <div class="ui text loader">Loading</div>
     </div>
-  }
-}
-
-let DocumentItem = {
-  render: c => {
-    let _item = c.props.item
-    let select = () => Dispatcher.dispatchAction(ACTIONS.SELECT_DOCUMENT, { id: _item.id  })
-    let Wrap = {
-      render ({props}) {
-        if (c.props.active)
-          return <div class="active item">{props.children}</div>
-        return <a class="item" onClick={select}>{props.children}</a>
-      }
-    }
-
-    return <Wrap>{_item.name}</Wrap>
   }
 }
 
@@ -59,12 +42,35 @@ export default {
   render({ props, state }, setState) {
     let { documents } = state
 
-    let list = documents.map(item => <DocumentItem active={item.id === state.selected} item={item} />)
+    function selectItem(id) {
+      return () => Dispatcher.dispatchAction(ACTIONS.SET_ROUTE, { route: `/doc/${id}` })
+    }
 
-    return <div id="document-list" class="ui left fixed vertical menu">
-      <div class="ui horizontal divider">NotePad</div>
+    let list = []
+    for (let item of documents) {
+      // if (item.id === state.selected) {
+      //   list.push(<div class="active item">{item.name}</div>)
+      // } else {
+      //   list.push(<a class="item" onClick={selectItem(item.id)}>{item.name}</a>)
+      // }
+      list.push(<div class="ui card" onClick={selectItem(item.id)}>
+        <div class="content">
+          <div class="header">{item.name}</div>
+          <div class="meta">{item.email}</div>
+          <div class="meta">{item.updated_at}</div>
+          <div class="description">
+            {item.description}
+          </div>
+        </div>
+      </div>
+      )
+    }
+
+    let create = () => Dispatcher.dispatchAction(ACTIONS.CREATE_DOCUMENT)
+
+    return <div id="document-list" class="ui cards">
       <Loader active={state.loading}>Loading</Loader>
-        {list}
+        {list.length != 0 ? list : <a class="item" onClick={create}>Create a document.</a>}
     </div>
   }
 }

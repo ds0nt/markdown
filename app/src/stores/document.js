@@ -11,9 +11,8 @@
  *   - sync:success, sync:failure
  */
 
- import { ACTIONS } from '../core/constants'
 import Store from '../core/store'
-import documents from '../http/documents'
+import api from '../http/api'
 import Dispatcher from '../core/dispatcher'
 
 class DocumentStore extends Store {
@@ -32,7 +31,7 @@ class DocumentStore extends Store {
   }
   async create() {
     try {
-      let {data} = await documents.create({
+      let {data} = await api.createDocument({
         body: "# Untitled"
       })
       await this.sync()
@@ -45,7 +44,7 @@ class DocumentStore extends Store {
   }
   async remove() {
     try {
-      let {data} = await documents.delete(this.getState().selected.id)
+      let {data} = await api.deleteDocument(this.getState().selected.id)
       await this.sync()
       this.select(this.getState().documents[0])
     } catch (e) {
@@ -56,7 +55,7 @@ class DocumentStore extends Store {
   }
   async sync() {
     try {
-      let { data } = await documents.sync()
+      let { data } = await api.syncDocuments()
       this.setState({
         documents: data
       })
@@ -68,7 +67,7 @@ class DocumentStore extends Store {
   }
   async select({ id }) {
     try {
-      let { data } = await documents.fetch(id)
+      let { data } = await api.fetchDocument(id)
       this.setState({
         selected: data,
       })
@@ -81,7 +80,7 @@ class DocumentStore extends Store {
   }
   async save(id, data) {
     try {
-      let res = await documents.update(id, data)
+      let res = await api.updateDocuments(id, data)
     } catch (e) {
       this.dispatch({
         actionType: 'save:failure'
